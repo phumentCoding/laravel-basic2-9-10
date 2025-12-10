@@ -6,12 +6,17 @@ services:
     container_name: laravel-app
     ports:
       - "8000:8000"
+    depends_on:
+      - database
+    env_file:
+      - .env
     environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - APP_KEY=base64:o6XhjWjO9QXW3Jb81Rd4jVrDqzC/Y4iHqQ1zL2ZmM=
-      - APP_URL=http://localhost:8000
-
+      - APP_ENV=${APP_ENV:-local}
+      - APP_DEBUG=${APP_DEBUG:-true}
+      - APP_KEY=${APP_KEY:-base64:o6XhjWjO9QXW3Jb81Rd4jVrDqzC/Y4iHqQ1zL2ZmM=}
+      - APP_URL=${APP_URL:-http://localhost:8000}
+    networks:
+      - laravel-network
   database:
     image: mysql:8.0
     container_name: mysql
@@ -22,3 +27,9 @@ services:
       - MYSQL_DATABASE=laravel
       - MYSQL_USER=laravel
       - MYSQL_PASSWORD=laravel
+    networks:
+      - laravel-network
+
+networks:
+  laravel-network:
+    driver: bridge
